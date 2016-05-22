@@ -48,10 +48,12 @@
                                   {exit_on_close,<%= node['rabbitmq']['tcp_listen_exit_on_close'] %>},
                                   {keepalive,<%= node['rabbitmq']['tcp_listen_keepalive'] %>},
                                   {linger, {<%= node['rabbitmq']['tcp_listen_linger'] %>,<%= node['rabbitmq']['tcp_listen_linger_timeout'] %>}}]},
-<% else -%>
-   {tcp_listeners, []},
 <% end %>
-
+<% if node['rabbitmq']['tcp_listeners'] -%>
+    {tcp_listeners, [<%= node['rabbitmq']['tcp_listeners'].map{ |key, value| "{ \"#{key.to_sym}\", #{value.to_s} }"}.join(', ') %>]},
+<% else -%>
+    {tcp_listeners, []},
+<% end %>
 <% if node['rabbitmq']['log_levels'] -%>
     {log_levels, [<%= node['rabbitmq']['log_levels'].map{ |key, value| "{ #{key}, #{value} }"}.join(', ') %>]},
 <% end %>
